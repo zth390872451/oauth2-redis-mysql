@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -22,6 +23,7 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 import redis.clients.jedis.JedisPoolConfig;
 
 import javax.sql.DataSource;
+import java.security.AuthProvider;
 
 @Configuration
 @EnableAuthorizationServer//于配置 OAuth 2.0 授权服务器机制
@@ -61,11 +63,19 @@ public class OAuth2ServerConfiguration extends AuthorizationServerConfigurerAdap
 		return new RedisTokenStore(redisConnectionFactory());
 	}
 
+	/*@Bean
+	public AuthenticationManager authenticationManager(){
+		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+		return (AuthenticationManager) daoAuthenticationProvider;
+	}*/
+
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints)
 			throws Exception {
-		endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager).userDetailsService(userDetailsService);
+		/*endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager).userDetailsService(userDetailsService);*/
+		endpoints/*.tokenStore(tokenStore())*/.authenticationManager(authenticationManager).userDetailsService(userDetailsService);
 	}
 
 	@Bean
@@ -87,11 +97,12 @@ public class OAuth2ServerConfiguration extends AuthorizationServerConfigurerAdap
 		return jedisConnectionFactory;
 	}
 
+
 	@Bean
 	public AuthorizationServerTokenServices defaultTokenServices() {
 		DefaultTokenServices tokenServices = new DefaultTokenServices();
 		tokenServices.setSupportRefreshToken(true);
-		tokenServices.setTokenStore(this.tokenStore());
+		tokenServices.setTokenStore(new RedisTokenStore(redisConnectionFactory()));//设置Token的存储方式
 		return tokenServices;
 	}
 
@@ -104,6 +115,7 @@ public class OAuth2ServerConfiguration extends AuthorizationServerConfigurerAdap
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
 		security.allowFormAuthenticationForClients();
 		security.passwordEncoder(passwordEncoder);
+		security.checkTokenAccess("permitAll()");//允许 check_token 端点无需校验
 	}
 
 }

@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/oauth2/clientDetails")
 public class OauthClientDetailsController {
-   /* @Autowired
+
+    /* @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JdbcClientDetailsService jdbcClientDetailsService;
