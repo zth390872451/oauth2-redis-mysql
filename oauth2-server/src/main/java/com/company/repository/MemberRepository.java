@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 @Component("memberRepository")
 public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecificationExecutor<Member> {
 
-	public Member findOneByMobile(String mobile);
-	
+//	Member findOneByMobile(String mobile);
 
+
+	Member findOneByUsername(String username);
 }

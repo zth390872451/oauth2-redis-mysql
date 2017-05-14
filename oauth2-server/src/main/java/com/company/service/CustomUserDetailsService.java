@@ -20,11 +20,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	private static final Logger log = LoggerFactory.getLogger(CustomUserDetailsService.class);
 	@Autowired
-	private MemberRepository accountUserRepository;
+	private MemberRepository memberRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Member member = accountUserRepository.findOneByMobile(username);
+		Member member = memberRepository.findOneByUsername(username);
 		if (member == null) {
 			log.error("用户不存在");
 			throw new UsernameNotFoundException(String.format("User %s does not exist!", username));
@@ -50,7 +50,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 		@Override
 		public String getUsername() {
-			return getMobile();
+			return super.getUsername();
 		}
 
 		@Override
