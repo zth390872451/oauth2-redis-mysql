@@ -95,6 +95,7 @@ public class OAuth2ServerConfiguration extends AuthorizationServerConfigurerAdap
 	 * 2、JdbcTokenStore
 	 * 3、JwtTokenStore
 	 * 4、RedisTokenStore
+	 * 5、JwkTokenStore
 	 */
 	@Bean
 	public TokenStore tokenStore() {
