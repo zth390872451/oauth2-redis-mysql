@@ -14,6 +14,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
@@ -97,6 +99,21 @@ public class OAuth2ServerConfiguration extends AuthorizationServerConfigurerAdap
 	@Bean
 	public TokenStore tokenStore(RedisConnectionFactory redisConnectionFactory) {
 		return new RedisTokenStore(redisConnectionFactory);
+	}
+
+
+	@Bean
+	public DefaultTokenServices defaultTokenServices(RedisConnectionFactory redisConnectionFactory) {
+		DefaultTokenServices tokenServices = new DefaultTokenServices();
+		tokenServices.setTokenStore(tokenStore(redisConnectionFactory));
+		return tokenServices;
+	}
+
+	@Bean
+	public AuthorizationServerTokenServices authorizationServerTokenServices(RedisConnectionFactory redisConnectionFactory) {
+		DefaultTokenServices tokenServices = new DefaultTokenServices();
+		tokenServices.setTokenStore(tokenStore(redisConnectionFactory));
+		return tokenServices;
 	}
 
 }

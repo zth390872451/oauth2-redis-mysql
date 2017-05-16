@@ -105,7 +105,7 @@ public class Oauth2Controller {
 			e.printStackTrace();
 			return "error 401";
 		}
-		return accessToken+"";
+		return accessToken;
 	}
 
 }

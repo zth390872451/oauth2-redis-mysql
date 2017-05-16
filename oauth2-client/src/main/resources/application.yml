@@ -10,11 +10,11 @@ spring:
       name: oauth2-client
   datasource:
     dataSourceClassName: com.mysql.jdbc.Driver
-#    url: jdbc:mysql://192.168.2.35:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
-    url: jdbc:mysql://127.0.0.1:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.2.35:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
+#    url: jdbc:mysql://127.0.0.1:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
     username: root
-#    password: root
-    password: 123456
+    password: root
+#    password: 123456
 
     initialSize: 50
     maxActive: 1000
@@ -44,5 +44,5 @@ spring:
 
 oauth:
   token: http://127.0.0.1:8050/oauth2-server/oauth/token
-  check_token: http://localhost:8050/oauth2/oauth/check_token
+  check_token: http://localhost:8050/oauth2-server/oauth/check_token
 

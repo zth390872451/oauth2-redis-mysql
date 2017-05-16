@@ -10,10 +10,10 @@ spring:
       name: oauth2-server
   redis:
       database: 8
-#      host: 192.168.2.35
-#      password: rediS100
-      host: 127.0.0.1
-      password: 123456
+      host: 192.168.2.35
+      password: rediS100
+#      host: 127.0.0.1
+#      password: 123456
       port: 6379
       pool:
           max-active: 8
@@ -23,11 +23,11 @@ spring:
 
   datasource:
     dataSourceClassName: com.mysql.jdbc.Driver
-#    url: jdbc:mysql://192.168.2.35:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
-    url: jdbc:mysql://127.0.0.1:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.2.35:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
+#    url: jdbc:mysql://127.0.0.1:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
     username: root
-#    password: root
-    password: 123456
+    password: root
+#    password: 123456
 
     initialSize: 50
     maxActive: 1000
