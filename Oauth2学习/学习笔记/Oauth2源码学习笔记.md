@@ -30,5 +30,6 @@ DaoAuthenticationProvider 类：  实现了模板方法 retrieveUser。
     UserDetailsService 接口 用于认证，可自定义实现类，灵活使用。
     
     
-    
+    应用级别的安全主要分为“验证( authentication) ”和“(授权) authorization ”两个部分。这也是Spring Security主要需要处理的两个部分
 
+Authentication ”指的是建立规则( principal )的过程。规则可以是一个用户、设备、或者其他可以在我们的应用中执行某种操作的其他系统。" Authorization "指的是判断某个 principal 在我们的应用是否允许执行某个操作。
