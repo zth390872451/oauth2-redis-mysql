@@ -80,12 +80,14 @@ public class OAuth2ServerConfiguration extends AuthorizationServerConfigurerAdap
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints)
 			throws Exception {
-		endpoints.authenticationManager(authenticationManager).userDetailsService(userDetailsService);
+		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore()).userDetailsService(userDetailsService);
 	}
 
 
 	/*******************************授权流程服务相关配置【TokenEndpoint类中/oauth/token接口涉及的Bean的相关配置】***********************************/
 
+	@Autowired
+	private RedisConnectionFactory redisConnectionFactory;
 	/**
 	 * 配置AccessToken的存储方式：此处使用Redis存储
 	 * Token的可选存储方式
@@ -95,7 +97,7 @@ public class OAuth2ServerConfiguration extends AuthorizationServerConfigurerAdap
 	 * 4、RedisTokenStore
 	 */
 	@Bean
-	public TokenStore tokenStore(RedisConnectionFactory redisConnectionFactory) {
+	public TokenStore tokenStore() {
 		return new RedisTokenStore(redisConnectionFactory);
 	}
 
