@@ -1,9 +1,9 @@
 package com.company.controller;
 
 
+import com.company.utils.ApplicationSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,12 +30,9 @@ public class Oauth2Controller {
 	
 	private static final Logger log = LoggerFactory.getLogger(Oauth2Controller.class);
 
-	@Autowired
-	private ResourceOwnerPasswordResourceDetails resource;//账号密码验证(密Oauth2的码模式)
-	@Autowired
-	private ClientCredentialsResourceDetails clientCredentials;//客户端验证(Oauth2的客户端模式)
 
 	/**
+	 * //账号密码验证(密Oauth2的码模式)
 	 * 获取token
 	 */
 	@RequestMapping(value = "/pwdToken",method = RequestMethod.POST)
@@ -50,15 +48,19 @@ public class Oauth2Controller {
 			int len = 32 - password.length();
 			pre = String.format("%0" + len + "d", 0);
 		}
-		resource.setClientId(client_id);
-		resource.setClientSecret(client_secret);
-		resource.setUsername(username);
-		resource.setPassword(pre + password);
+		ResourceOwnerPasswordResourceDetails details = new ResourceOwnerPasswordResourceDetails();
+		details.setAccessTokenUri(ApplicationSupport.getParamVal("oauth.token"));
+		details.setScope(Arrays.asList("read", "write"));
+//		details.setClientSecret("password");
+		details.setClientId(client_id);
+		details.setClientSecret(client_secret);
+		details.setUsername(username);
+		details.setPassword(pre + password);
 
 		ResourceOwnerPasswordAccessTokenProvider provider = new ResourceOwnerPasswordAccessTokenProvider();
 		OAuth2AccessToken accessToken = null;
 		try {
-			accessToken = provider.obtainAccessToken(resource, new DefaultAccessTokenRequest());
+			accessToken = provider.obtainAccessToken(details, new DefaultAccessTokenRequest());
 		} catch (NullPointerException e) {
 			log.error("授权失败原因：{}", e.getMessage());
 			return "用户不存在";
@@ -80,7 +82,8 @@ public class Oauth2Controller {
 	}
 
 	/**
-	 * 信任的客户端获取token
+	 * 客户端验证(Oauth2的客户端模式)
+	 * 客户端获取token
 	 */
 	@RequestMapping(value = "/clientToken",method = RequestMethod.POST)
 	public Object getToken(@RequestParam(value = "client_id") String client_id,
@@ -88,12 +91,10 @@ public class Oauth2Controller {
 								   @RequestParam(value = "grant_type") String grant_type
 								   ){
 
-//		OAuth2RestTemplate oAuth2RestTemplate = new OAuth2RestTemplate();
-		/*DefaultTokenServices defaultTokenServices = (DefaultTokenServices) ApplicationSupport.getBean("defaultTokenServices");
-		OAuth2AccessToken oAuth2AccessToken = defaultTokenServices.readAccessToken("58741895-8c2d-4f3c-9f95-08c258e956cf");
-		boolean expired = oAuth2AccessToken.isExpired();
-		System.out.println("oAuth2AccessToken = " + oAuth2AccessToken);
-*/
+		ClientCredentialsResourceDetails clientCredentials = new ClientCredentialsResourceDetails();
+		clientCredentials.setAccessTokenUri(ApplicationSupport.getParamVal("oauth.token"));
+		clientCredentials.setScope(Arrays.asList("read", "write"));
+//		clientCredentials.setClientSecret("client_secret");
 		clientCredentials.setClientId(client_id);
 		clientCredentials.setClientSecret(client_secret);
 		clientCredentials.setGrantType(grant_type);

@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -21,8 +20,10 @@ public class Oauth2Utils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Oauth2Utils.class);
     private static String checkTokenUrl ;// = "http://localhost:6060/oauth2/oauth/check_token";
+    private static String getAuthenticationUrl;
     static {
         checkTokenUrl = ApplicationSupport.getParamVal("oauth.check_token");
+        getAuthenticationUrl = ApplicationSupport.getParamVal("oauth.get_auth");
     }
 
     /**
@@ -31,10 +32,42 @@ public class Oauth2Utils {
      * @return
      */
     public static OAuth2AccessToken  checkTokenInOauth2Server(String accessToken){
-        DefaultTokenServices defaultTokenServices = (DefaultTokenServices) ApplicationSupport.getBean("defaultTokenServices");
+        /*DefaultTokenServices defaultTokenServices = (DefaultTokenServices) ApplicationSupport.getBean("defaultTokenServices");
         OAuth2AccessToken oAuth2AccessToken = defaultTokenServices.readAccessToken(accessToken);
-        OAuth2Authentication oAuth2Authentication = defaultTokenServices.loadAuthentication(accessToken);
+        OAuth2Authentication oAuth2Authentication = defaultTokenServices.loadAuthentication(accessToken);*/
+        TokenStore tokenStore = (TokenStore) ApplicationSupport.getBean("tokenStore");
+        OAuth2AccessToken oAuth2AccessToken = tokenStore.readAccessToken(accessToken);
         return oAuth2AccessToken;
+    }
+
+    /**
+     * oauth2 认证服务器处理校验请求的逻辑
+     * @param accessToken
+     * @return
+     */
+    public static OAuth2Authentication  getAuthenticationInOauth2Server(String accessToken){
+        TokenStore tokenStore = (TokenStore) ApplicationSupport.getBean("tokenStore");
+        OAuth2Authentication oAuth2Authentication = tokenStore.readAuthentication(accessToken);
+        return oAuth2Authentication;
+    }
+
+    /**
+     * 客户端申请校验
+     * @param tokenValue
+     * @return
+     */
+    public static OAuth2Authentication getAuthenticationInOauth2Client(String tokenValue){
+        if (StringUtils.isEmpty(tokenValue)) {
+            return null;
+        }
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            OAuth2Authentication oAuth2Authentication = restTemplate.getForObject(checkTokenUrl+"?token="+tokenValue, OAuth2Authentication.class);
+            return oAuth2Authentication;
+        }catch (Exception e){
+            LOGGER.error("getAuthenticationInOauth2Client failure:",e);
+            return null;
+        }
     }
 
     /**
