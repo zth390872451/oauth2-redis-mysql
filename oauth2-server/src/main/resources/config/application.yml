@@ -9,7 +9,7 @@ spring:
   application:
       name: oauth2-server
   redis:
-      database: 1
+      database: 4
 #      host: 192.168.2.35
 #      password: rediS100
       host: 127.0.0.1
@@ -28,23 +28,6 @@ spring:
     username: root
 #    password: root
     password: 123456
-
-    initialSize: 50
-    maxActive: 1000
-    minIdle: 5
-    maxWait: 60000
-    validationQuery: select 1
-    testOnBorrow: false
-    testOnReturn: false
-    testWhileIdle: true
-    poolPreparedStatements: true
-    maxPoolPreparedStatementPerConnectionSize: 50
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 25200000
-    removeAbandoned: true
-    removeAbandonedTimeout: 1800
-    logAbandoned: true
-    filters: stat
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     database: MYSQL
