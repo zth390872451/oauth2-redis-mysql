@@ -33,8 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	}
 
 	/**
-	 * bug：在重命名该类为B(原有名字为A)之后，若仍旧以原来的账号密码进行获取AccessToken信息(旧AccessToken失效，刷新AccessToken方式)，将会提示
-	 *  A类找不到(ClassNotFound)的异常。解决方式：删除数据库的两张表对应的两条记录： oauth_access_token 和oauth_refresh_token
+	 *  注意该类的层次结构，继承了Member并实现了UserDetails接口，继承是为了使用Member的username和password信息
 	 */
 	private final static class UserRepositoryUserDetails extends Member implements UserDetails {
 		private static final long serialVersionUID = 1L;
@@ -74,9 +73,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 		}
 
 	}
-	
-	/*public static void main(String[] args) {
-		String password = "k2appabc7893d34";
+
+	//client_id 和 client_secret 生成
+	/*
+	public static void main(String[] args) {
+		String password = "123456";
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String hashedPassword = passwordEncoder.encode(password);
 		System.out.println(hashedPassword);
@@ -84,22 +85,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	}*/
 	
 	/*
-	  INSERT INTO oauth_client_details (
-			client_id,
-			client_secret,
-			scope,
-			authorized_grant_types,
-			authorities,
-			access_token_validity
-		)
-		VALUES
-			(
-				'wxb_doki_api_ios',
-				'$2a$10$/AgahDVVEckNZt18ZIrQVONkXVx/NG.srm9tX6JgkZ8r8ULeLr3o.',
-				'read,write',
-				'client_credentials,refresh_token',
-				'USER',
-				'2592000'
-			)
-			*/
+	插入数据库
+	INSERT INTO `redis-oauth2`.`oauth_client_details` (`client_id`, `resource_ids`, `client_secret`, `scope`, `authorized_grant_types`, `web_server_redirect_uri`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additional_information`, `autoapprove`) VALUES ('client_auth_mode', '', '$2a$10$ei2IVxChXOklD2QPR4l4TOdEE8CdlREIEy775v5GfMnpSBX1misoy', 'read,write', 'client_credentials,refresh_token', NULL, 'USER', '3600', NULL, NULL, NULL);
+	*/
 }

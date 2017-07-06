@@ -1,8 +1,7 @@
 package com.company.domain;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
 /**
@@ -11,18 +10,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ux_member")
-public class Member extends BaseEntity {
-	
-	private static final long serialVersionUID = 100007152668889L;
-
-
+public class Member {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 	private String username;
-
-	/**
-	 * 密码
-	 */
 	private String password;
-
 
 	public Member(Member member){
 		super();
@@ -31,11 +24,7 @@ public class Member extends BaseEntity {
 	}
 	
 	public Member() {
-	}
-	
 
-	public Member(Long id) {
-		super.setId(id);
 	}
 
 	public String getUsername() {
@@ -54,4 +43,11 @@ public class Member extends BaseEntity {
 		this.password = password;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }
