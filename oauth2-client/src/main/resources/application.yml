@@ -41,9 +41,9 @@ spring:
     hibernate:
         ddl-auto: update #(none)
 
-
 oauth:
   token: http://127.0.0.1:8050/oauth2-server/oauth/token
-  check_token: http://localhost:8050/oauth2/oauth/check_token
-  get_auth: http://localhost:8050/oauth2/oauth/getAuth
+  check_token: http://localhost:8050/oauth2-server/oauth/check_token
+  get_auth: http://localhost:8050/oauth2-server/oauth/getAuth
+debug: true
 

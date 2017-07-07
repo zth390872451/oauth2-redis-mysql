@@ -1,9 +1,12 @@
 package com.company.filter;
 
+import com.company.utils.ApplicationSupport;
 import com.company.utils.Oauth2Utils;
 import com.company.utils.ResponseUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,6 +20,12 @@ public class Oauth2Interceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request,
 							 HttpServletResponse response, Object handler) throws Exception {
 		String accessToken = request.getParameter("access_token");
+		RemoteTokenServices remoteTokenServices = (RemoteTokenServices) ApplicationSupport.getBean("remoteTokenServices");
+		remoteTokenServices.setClientId("client_auth_mode");
+//		remoteTokenServices.setClientSecret("k2appabc7893d34");
+
+//		OAuth2AccessToken oAuth2AccessToken = remoteTokenServices.readAccessToken(accessToken);
+		OAuth2Authentication oAuth2Authentication = remoteTokenServices.loadAuthentication(accessToken);
 		OAuth2AccessToken oauth2AccessToken = Oauth2Utils.checkTokenInOauth2Client(accessToken);
 		if (oauth2AccessToken==null){//非法的Token值
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
