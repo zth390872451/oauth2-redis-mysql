@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import javax.sql.DataSource;
 
@@ -20,6 +21,8 @@ public class AuthAuthorizeConfig extends AuthorizationServerConfigurerAdapter {
 	DataSource dataSource;
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	@Autowired
+	private TokenStore tokenStore;
 
 	/**
 	 * 配置 oauth_client_details【client_id和client_secret等】信息的认证【检查ClientDetails的合法性】服务
@@ -31,16 +34,18 @@ public class AuthAuthorizeConfig extends AuthorizationServerConfigurerAdapter {
 		clients.jdbc(dataSource);
 	}
 
+
 	/**
-	 * 密码模式下配置认证管理器 AuthenticationManager
+	 * 密码模式下配置认证管理器 AuthenticationManager,并且设置 AccessToken的存储介质tokenStore,如果不设置，则会默认使用内存当做存储介质。
 	 * 而该AuthenticationManager将会注入 2个Bean对象用以检查(认证)
 	 * 1、ClientDetailsService的实现类 JdbcClientDetailsService (检查 ClientDetails 对象)
 	 * 2、UserDetailsService的实现类 CustomUserDetailsService (检查 UserDetails 对象)
+	 *
      */
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints)
 			throws Exception {
-		endpoints.authenticationManager(authenticationManager);
+		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore);
 	}
 
 	/**
