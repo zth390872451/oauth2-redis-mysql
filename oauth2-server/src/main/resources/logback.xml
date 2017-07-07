@@ -17,7 +17,7 @@
      <!--The FILE and ASYNC appenders are here as examples for a production configuration -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>oauth2-service.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>oauth2-server.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -52,8 +52,7 @@
     <logger name="org.springframework.cache" level="WARN"/>
     <logger name="org.eclipse.jetty" level="WARN" />
     <logger name="httpclient.wire" level="WARN"></logger> <!--for Wire class  -->
-    <logger name="com.alibaba.druid" level="WARN"></logger>
-    
+
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>

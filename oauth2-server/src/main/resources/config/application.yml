@@ -10,8 +10,6 @@ spring:
       name: oauth2-server
   redis:
       database: 4
-#      host: 192.168.2.35
-#      password: rediS100
       host: 127.0.0.1
       password: root123456
       port: 6379
@@ -22,11 +20,9 @@ spring:
           max-idle: 8
 
   datasource:
-    dataSourceClassName: com.mysql.jdbc.Driver
-#    url: jdbc:mysql://192.168.2.35:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
+#    dataSourceClassName: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
     username: root
-#    password: root
     password: 123456
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
