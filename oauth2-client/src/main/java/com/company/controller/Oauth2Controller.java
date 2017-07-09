@@ -16,50 +16,50 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
- * @Desc 认证登录接口
- *
+ * @Desc 认证登录接口(获取AccessToken)
  */
 @RestController
 @RequestMapping("/api/oauth2")
 public class Oauth2Controller {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(Oauth2Controller.class);
 
-
 	/**
-	 * //账号密码验证(密Oauth2的码模式)
-	 * 获取token
+	 * OAuth2的密码授权模式
 	 */
-	@RequestMapping(value = "/pwdToken",method = RequestMethod.POST)
+	@RequestMapping(value = "/passwordMode",method = RequestMethod.POST)
 	public Object accessToken(@RequestParam(value = "client_id") String client_id,
 							  @RequestParam(value = "client_secret") String client_secret,
 							  @RequestParam(value = "grant_type") String grant_type,
 							  @RequestParam(value = "username") String username,
 							  @RequestParam(value = "password") String password
 									 ){
-		//App端dm5加密后不足32位加零补齐的情况
-		String pre = "";
-		if (password.length() < 32) {
+		//补足：对dm5加密后的密码不足32位加零补齐
+		String fill = "";
+		if (password.length() < 32) {//下面的details的password的长度必须32位，所以非32位则，需要补足位数
 			int len = 32 - password.length();
-			pre = String.format("%0" + len + "d", 0);
+			fill = String.format("%0" + len + "d", 0);
 		}
+		//创建一个包含需要请求的资源实体以及认证信息集合的对象
 		ResourceOwnerPasswordResourceDetails details = new ResourceOwnerPasswordResourceDetails();
+		//设置请求认证授权的服务器的地址
 		details.setAccessTokenUri(ApplicationSupport.getParamVal("oauth.token"));
+		//下面都是认证信息：所拥有的权限，认证的客户端，具体的用户
 		details.setScope(Arrays.asList("read", "write"));
-//		details.setClientSecret("password");
 		details.setClientId(client_id);
 		details.setClientSecret(client_secret);
 		details.setUsername(username);
-		details.setPassword(pre + password);
+		details.setPassword(fill + password);
 
 		ResourceOwnerPasswordAccessTokenProvider provider = new ResourceOwnerPasswordAccessTokenProvider();
 		OAuth2AccessToken accessToken = null;
 		try {
+			//获取AccessToken
+			// 1、(内部流程简介：根据上述信息，将构造一个前文一中的请求头为 "Basic Base64(username:password)" 的http请求
+			//2、之后将向认证授权服务器的 oauth/oauth_token 端点发送请求，试图获取AccessToken
 			accessToken = provider.obtainAccessToken(details, new DefaultAccessTokenRequest());
 		} catch (NullPointerException e) {
 			log.error("授权失败原因：{}", e.getMessage());
@@ -68,33 +68,22 @@ public class Oauth2Controller {
 			log.error("授权失败原因：{}", e.getMessage());
 			return "创建token失败";
 		}
-
-
-
-		String token = accessToken.getValue();
-		int expiresIn = accessToken.getExpiresIn();
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("access_token", token);
-		map.put("token_type", accessToken.getTokenType());
-		map.put("expires_in", expiresIn);
-
 		return accessToken;
 	}
 
 	/**
-	 * 客户端验证(Oauth2的客户端模式)
-	 * 客户端获取token
+	 * Oauth2的受信任的客户端授权模式
 	 */
-	@RequestMapping(value = "/clientToken",method = RequestMethod.POST)
+	@RequestMapping(value = "/clientMode",method = RequestMethod.POST)
 	public Object getToken(@RequestParam(value = "client_id") String client_id,
 								   @RequestParam(value = "client_secret") String client_secret,
 								   @RequestParam(value = "grant_type") String grant_type
 								   ){
-
+		//创建一个包含需要请求的资源实体以及认证信息集合的对象
 		ClientCredentialsResourceDetails clientCredentials = new ClientCredentialsResourceDetails();
 		clientCredentials.setAccessTokenUri(ApplicationSupport.getParamVal("oauth.token"));
+		//下面都是认证信息：所拥有的权限，认证的客户端
 		clientCredentials.setScope(Arrays.asList("read", "write"));
-//		clientCredentials.setClientSecret("client_secret");
 		clientCredentials.setClientId(client_id);
 		clientCredentials.setClientSecret(client_secret);
 		clientCredentials.setGrantType(grant_type);
@@ -104,9 +93,9 @@ public class Oauth2Controller {
 			accessToken = provider.obtainAccessToken(clientCredentials, new DefaultAccessTokenRequest());
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "error 401";
+			return "获取AccessToken失败";
 		}
-		return accessToken+"";
+		return accessToken;
 	}
 
 }

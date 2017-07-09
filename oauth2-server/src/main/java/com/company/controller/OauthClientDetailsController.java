@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created by Administrator on 2017/5/13.
+ * 后续开发：提供接口，设置 client_id 和 client_secret 的相关接口
  */
 @RestController
 @RequestMapping("/oauth2/clientDetails")

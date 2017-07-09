@@ -15,12 +15,14 @@
         <com.alibaba.version>1.0.14</com.alibaba.version>
     </properties>
     <dependencies>
+<!--
 
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
             <version>2.0.13.RELEASE</version>
         </dependency>
+-->
 
 
         <dependency>

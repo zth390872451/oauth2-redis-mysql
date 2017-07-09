@@ -8,31 +8,11 @@ server:
 spring:
   application:
       name: oauth2-client
-  datasource:
-    dataSourceClassName: com.mysql.jdbc.Driver
-#    url: jdbc:mysql://192.168.2.35:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
+  datasource: #数据源的配置
     url: jdbc:mysql://127.0.0.1:3306/redis-oauth2?useUnicode=true&characterEncoding=UTF-8
     username: root
-#    password: root
     password: 123456
-
-    initialSize: 50
-    maxActive: 1000
-    minIdle: 5
-    maxWait: 60000
-    validationQuery: select 1
-    testOnBorrow: false
-    testOnReturn: false
-    testWhileIdle: true
-    poolPreparedStatements: true
-    maxPoolPreparedStatementPerConnectionSize: 50
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 25200000
-    removeAbandoned: true
-    removeAbandonedTimeout: 1800
-    logAbandoned: true
-    filters: stat
-  jpa:
+  jpa: #jpa的支持：hibernate的相关配置
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     database: MYSQL
     openInView: true
@@ -41,9 +21,6 @@ spring:
     hibernate:
         ddl-auto: update #(none)
 
-oauth:
+oauth: #oauth2-server认证授权服务器的url配置，在获取AccessToken以及检测AccessToken中会用到
   token: http://127.0.0.1:8050/oauth2-server/oauth/token
-  check_token: http://localhost:8050/oauth2-server/oauth/check_token
-  get_auth: http://localhost:8050/oauth2-server/oauth/getAuth
-debug: true
-
+  check_token: http://localhost:8050/oauth2-server/oauth/check_token #检查AccessToken有效性的url(认证授权服务器的url地址),获取 AccessToken 对象

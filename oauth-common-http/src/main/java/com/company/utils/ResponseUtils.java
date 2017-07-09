@@ -8,10 +8,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Created by Administrator on 2017/5/13.
+ * 响应Response工具类
  */
 public class ResponseUtils {
-
 
     /**
      * 响应Http请求

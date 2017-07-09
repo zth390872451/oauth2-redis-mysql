@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 /**
- * Created by Administrator on 2017/5/8.
- */
+ * 获取Spring容器管理的Bean对象，应用中配置参数
+ **/
 @Component
 public class ApplicationSupport implements DisposableBean, ApplicationContextAware {
 
