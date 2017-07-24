@@ -1,5 +1,6 @@
 package com.company.conf;
 
+import com.company.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,8 @@ public class AuthAuthorizeConfig extends AuthorizationServerConfigurerAdapter {
 	private AuthenticationManager authenticationManager;
 	@Autowired
 	private TokenStore tokenStore;
+	@Autowired
+	private CustomUserDetailsService userDetailsService;
 
 	/**
 	 * 配置 oauth_client_details【client_id和client_secret等】信息的认证【检查ClientDetails的合法性】服务
@@ -44,7 +47,7 @@ public class AuthAuthorizeConfig extends AuthorizationServerConfigurerAdapter {
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints)
 			throws Exception {
-		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore);
+		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore).userDetailsService(userDetailsService);
 	}
 
 	/**
