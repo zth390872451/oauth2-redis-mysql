@@ -2,6 +2,7 @@ package com.company.domain;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 
 /**
@@ -10,7 +11,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "ux_member")
-public class Member {
+public class Member implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
